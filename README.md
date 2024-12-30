@@ -62,6 +62,13 @@ server.port=8080
 
 ---
 
+
+## Api integration**
+
+1. I have used alphavantage account to retrieve live stock price and it has limit for 25 requests daily.
+2. api key is " KPCMX3ZI3BMEUI9S"
+3. url= `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${API_KEY}`
+
 ## **Prerequisites**
 
 Make sure the following are installed on your system:
