@@ -8,50 +8,61 @@ const StockForm = ({ currentStock, onSubmit }) => {
   const [buyPrice, setBuyPrice] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialize form fields based on `currentStock` prop
   useEffect(() => {
     if (currentStock) {
-      setName(currentStock.name);
-      setTicker(currentStock.ticker);
-      setQuantity(currentStock.quantity);
-      setBuyPrice(currentStock.buyPrice);
+      setName(currentStock.name || "");
+      setTicker(currentStock.ticker || "");
+      setQuantity(currentStock.quantity || "");
+      setBuyPrice(currentStock.buyPrice || "");
     } else {
-      setName("");
-      setTicker("");
-      setQuantity("");
-      setBuyPrice("");
+      resetForm();
     }
   }, [currentStock]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); 
+  // Reset form fields
+  const resetForm = () => {
+    setName("");
+    setTicker("");
+    setQuantity("");
+    setBuyPrice("");
+  };
 
-    if (isSubmitting) return; 
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    if (isSubmitting) return; // Prevent duplicate submissions
     setIsSubmitting(true);
 
     const stockData = {
       name,
       ticker,
-      quantity: parseInt(quantity),
+      quantity: parseInt(quantity, 10),
       buyPrice: parseFloat(buyPrice),
     };
 
     try {
       if (currentStock) {
-       
-        await updateStock(currentStock.id, stockData);
+        // Update existing stock
+        const updatedStock = await updateStock(currentStock.id, stockData);
         alert("Stock updated successfully!");
+        if (onSubmit) onSubmit(updatedStock); // Notify parent with updated stock
       } else {
-     
-        await addStock(stockData);
+        // Add new stock
+        const newStock = await addStock(stockData);
         alert("Stock added successfully!");
+        if (onSubmit) onSubmit(newStock); // Notify parent with new stock
       }
 
-      onSubmit(); 
+      resetForm(); // Clear form fields after submission
     } catch (error) {
       console.error("Error saving stock:", error);
-      alert("An error occurred while saving the stock. Please try again.");
+      alert(
+        error.response?.data?.message ||
+          "An error occurred while saving the stock. Please try again."
+      );
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false); // Re-enable submissions
     }
   };
 
@@ -113,7 +124,11 @@ const StockForm = ({ currentStock, onSubmit }) => {
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300"
           disabled={isSubmitting}
         >
-          {currentStock ? "Update Stock" : "Add Stock"}
+          {isSubmitting
+            ? "Submitting..."
+            : currentStock
+            ? "Update Stock"
+            : "Add Stock"}
         </button>
       </form>
     </div>
