@@ -4,14 +4,14 @@ import { BrowserRouter as Router, Route, Routes,useParams } from 'react-router-d
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import StockForm from './components/StockForm';
-import StockTable from './components/StockTable';
+//import StockTable from './components/StockTable';
 import { fetchStocks } from './services/api';
 import DeleteStockForm from './components/DeleteStockForm';
 import EditSelection from './components/EditSelection';
-import {  fetchStockById, updateStock,fetchAllStocks } from './services/api';
+import {  fetchStockById, updateStock } from './services/api';
 const App = () => {
   const [stocks, setStocks] = useState([]);
-  const [currentStock, setCurrentStock] = useState(null);
+  const [setCurrentStock] = useState(null);
 
   const loadStocks = () => {
     fetchStocks().then(setStocks);
@@ -21,18 +21,18 @@ const App = () => {
     loadStocks();
   }, []);
 
-  const handleEdit = (stock) => {
-    setCurrentStock(stock);
-  };
+  // const handleEdit = (stock) => {
+  //   setCurrentStock(stock);
+  // };
 
   const handleFormSubmit = () => {
     loadStocks();
     setCurrentStock(null);
   };
 
-  const handleDelete = () => {
-    loadStocks();
-  };
+  // const handleDelete = () => {
+  //   loadStocks();
+  // };
 
   return (
     <Router>

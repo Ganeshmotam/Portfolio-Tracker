@@ -68,7 +68,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchPortfolioStocks();
-  }, []);
+  }, [fetchPortfolioStocks])
 
   const portfolioDistribution = {
     labels: stocks.map((stock) => stock.name),
