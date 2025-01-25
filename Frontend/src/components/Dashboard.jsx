@@ -30,26 +30,6 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch random stock symbols from your backend API
-  const fetchPortfolioStocks = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/api/stocks');  // Your backend API URL
-      const stockSymbols = response.data.map(stock => stock.ticker);
-      
-      const stocksData = [];
-      for (let symbol of stockSymbols) {
-        const stock = await fetchStockData(symbol);
-        if (stock) {
-          stocksData.push(stock);
-        }
-      }
-      setStocks(stocksData);
-      calculatePortfolioMetrics(stocksData);
-    } catch (error) {
-      console.error("Error fetching stock symbols:", error);
-    }
-  };
-
   const calculatePortfolioMetrics = (stocks) => {
     let total = 0;
     let top = null;
@@ -67,8 +47,27 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    const fetchPortfolioStocks = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/stocks');  // Your backend API URL
+        const stockSymbols = response.data.map(stock => stock.ticker);
+        
+        const stocksData = [];
+        for (let symbol of stockSymbols) {
+          const stock = await fetchStockData(symbol);
+          if (stock) {
+            stocksData.push(stock);
+          }
+        }
+        setStocks(stocksData);
+        calculatePortfolioMetrics(stocksData);
+      } catch (error) {
+        console.error("Error fetching stock symbols:", error);
+      }
+    };
+
     fetchPortfolioStocks();
-  }, [fetchPortfolioStocks])
+  }, []); // Empty dependency array ensures this runs only once
 
   const portfolioDistribution = {
     labels: stocks.map((stock) => stock.name),
